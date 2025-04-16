@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Paste Image from Clipboard</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+</head>
+
+<body>
+    <center class="mb-2" id="print">
+        <button class="btn btn-primary" onclick="window.print();">Download & Print</button>
+        <button class="btn btn-primary" onclick="location.href = 'test.html';">Edit</button>
+    </center>
+    
+
+
+
+
+    <section id="intial">
+        <div class="d-flex justify-content-center align-items-center text-white header">
+            <h2>CDM CELL REPORTING</h2>
+        </div>
+
+        <div class="d-flex align-items-center mt-2">
+
+            <div class="d-flex flex-column align-items-center">
+                <img src="image.png" alt="" height="100" width="100">
+                <p>CDM@CDG</p>
+            </div>
+
+            <div class="d-flex flex-column justify-content-center align-items-center"
+                style="margin: 5px 20px; width: 3000px;">
+                <div class="d-flex align-items-center mt-2">
+                    <div>
+                        <div class="d-flex align-items-center px-4 py-2">
+                            <span class="label">Date (UTC) : </span>
+                            <span class="value" id="utc-date">--</span>
+                        </div>
+                        <div class="d-flex align-items-center px-4 py-2">
+                            <span class="label">Time (UTC) : </span>
+                            <span class="value" id="utc-time">--</span>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="d-flex align-items-center px-4 py-2">
+                            <span class="label">CDM Cell-Mode : </span>
+                            <span class="value" id="cellmode"></span>
+                        </div>
+                        <div class="d-flex align-items-center px-4 py-2 ">
+                            <span class="label">Since : </span>
+                            <span class="value" id="sincetime"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-floating text-center" style="background-color: rgb(255, 147, 147);">
+                    <span id="description"></span>
+                </div>
+
+            </div>
+
+        </div>
+    </section>
+
+    <section id="highlights">
+        <div class="d-flex justify-content-center text-white mb-2"
+            style="background-color: rgb(232, 121, 30); height: 30px;">
+            <h4>HIGHLIGHTS</h4>
+        </div>
+
+        <div class="">
+            <div id="entriesContainer"></div> <!-- This div will display the entries -->
+        </div>
+    </section>
+
+    <section id="attendes_list">
+        <div class="d-flex justify-content-center text-white mb-2"
+            style="background-color: rgb(232, 121, 30); height: 30px;">
+            <h4>CDM CELL ATTENDES</h4>
+        </div>
+
+        <div class="" style="width: 100%">
+            <div class="d-flex align-items-center px-4 py-2 my-2 border rounded bg-light">
+                <span class="fw-semibold me-2">ADP Representative / COT CDGR:</span>
+                <span id="attendeeDisplay1" class="text-primary"></span>
+            </div>
+            <div class="d-flex align-items-center px-4 py-2 my-2 border rounded bg-light">
+                <span class="fw-semibold me-2">ADP deputy representative / COTA CDGR:</span>
+                <span id="attendeeDisplay2" class="text-primary"></span>
+            </div>
+            <div class="d-flex align-items-center px-4 py-2 my-2 border rounded bg-light">
+                <span class="fw-semibold me-2">ADP Airside ops manager / REPCDGR:</span>
+                <span id="attendeeDisplay3" class="text-primary"></span>
+            </div>
+            <div class="d-flex align-items-center px-4 py-2 my-2 border rounded bg-light">
+                <span class="fw-semibold me-2">ANSP representative / IPCDM:</span>
+                <span id="attendeeDisplay4" class="text-primary"></span>
+            </div>
+            <div class="d-flex align-items-center px-4 py-2 my-2 border rounded bg-light">
+                <span class="fw-semibold me-2">ANSP representative / IPO:</span>
+                <span id="attendeeDisplay5" class="text-primary"></span>
+            </div>
+            <div class="d-flex align-items-center px-4 py-2 my-2 border rounded bg-light">
+                <span class="fw-semibold me-2">AFR representative / CDQ - DO AF:</span>
+                <span id="attendeeDisplay6" class="text-primary"></span>
+            </div>
+        </div>
+    </section>
+
+    <section id="runway">
+        <div class="d-flex justify-content-center text-white mb-2"
+            style="background-color: rgb(232, 121, 30); height: 30px;">
+            <h4>RUNWAY</h4>
+        </div>
+
+        <div class="" style="max-width: 2000px;">
+            <div class="row">
+                <!-- Left column with 3 items -->
+                <div class="col-md-6 h-100">
+                    <div class="d-flex align-items-center px-4 py-2 my-1 border rounded bg-light">
+                        <span class="fw-semibold me-2">Configuration:</span>
+                        <span id="configurationDisplay" class="text-primary"></span>
+                    </div>
+                    <div class="d-flex w-100 gap-3 my-2">
+                        <div class="d-flex align-items-center px-4 py-2 border rounded bg-light flex-grow-1">
+                            <span class="fw-semibold me-2">Departure Capacity:</span>
+                            <span id="departureDisplay" class="text-primary"></span>
+                        </div>
+                        <div class="d-flex align-items-center px-4 py-2 border rounded bg-light flex-grow-1">
+                            <span class="fw-semibold me-2">Arrival Capacity:</span>
+                            <span id="arrivalDisplay" class="text-primary"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right column with comments -->
+                <div class="col-md-6">
+                    <div class="d-flex flex-column px-4 py-1 mb-2 border rounded bg-light">
+                        <span class="fw-semibold mb-1">Comments:</span>
+                        <span id="commentsDisplay" class="text-primary"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <center class="mx-4">
+            <div id="ImageContainer_1" style="image-rendering: auto;max-width: 100%;height: auto;">
+                <!-- Images will be inserted here -->
+            </div>
+        </center>
+    </section>
+
+    <section id="traffic">
+        <div class="d-flex justify-content-center text-white mb-3"
+            style="background-color: rgb(232, 121, 30); height: 30px;">
+            <h4>TRAFFIC SITUATIONS</h4>
+        </div>
+
+        <div class="d-flex justify-content-center fw-semibold text-white mb-3"
+            style="background-color: rgb(217, 165, 122); height: 20px; font-size: 15px;">
+            <p>ARRIVALS</p>
+        </div>
+        <center class="mt-4 mx-4">
+            <div id="ImageContainer_2" style="image-rendering: auto;max-width: 100%;height: auto;">
+                <!-- Images will be inserted here -->
+            </div>
+        </center>
+
+        <div class="d-flex justify-content-center fw-semibold text-white my-3"
+            style="background-color: rgb(217, 165, 122); height: 20px; font-size: 15px;">
+            <p>DEPARTURES</p>
+        </div>
+        <center class=" mt-4 mx-4">
+            <div id="ImageContainer_3" style="image-rendering: auto;max-width: 100%;height: auto;">
+                <!-- Images will be inserted here -->
+            </div>
+        </center>
+
+        <div class="d-flex justify-content-center fw-semibold text-white mt-3"
+            style="background-color: rgb(217, 165, 122); height: 20px; font-size: 15px;">
+            <p>TRAFFIC FLOW</p>
+        </div>
+        <center class="mt-4 mx-4">
+            <div id="ImageContainer_4" style="image-rendering: auto;max-width: 100%;height: auto;">
+                <!-- Images will be inserted here -->
+            </div>
+        </center>
+    </section>
+
+    <section id="weather">
+        <div class="d-flex justify-content-center text-white mt-4"
+            style="background-color: rgb(232, 121, 30); height: 30px;">
+            <h4>WEATHER at
+                <span id="utc-time2">--</span> UTC
+            </h4>
+        </div>
+
+        <div class="weather d-flex justify-content-center gap-5 mt-4">
+            <!-- <div class="row"> -->
+            <!-- Real-time Weather -->
+            <div class="col-md-3">
+                <div class="card shadow-sm mb-4">
+                    <div class="card-header bg-primary text-white">Real-time Weather</div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <label class="form-label">T°C (under shelter)</label>
+                            <span class="value" id="real-under-temp-display"></span>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">T°C (ground)</label>
+                            <span class="value" id="real-ground-temp-display"></span>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Precipitation</label>
+                            <span class="value" id="real-precipitation-display"></span>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Pavement condition</label>
+                            <span class="value" id="real-pavement-display"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Forecast Weather -->
+            <div class="col-md-3">
+                <div class="card shadow-sm mb-4">
+                    <div class="card-header bg-info text-white">Forecast Weather</div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <label class="form-label">T°C (under shelter)</label>
+                            <span class="value" id="forecast-under-temp-display"></span>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">T°C (ground)</label>
+                            <span class="value" id="forecast-ground-temp-display"></span>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Precipitation</label>
+                            <span class="value" id="forecast-precipitation-display"></span>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Pavement condition</label>
+                            <span class="value" id="forecast-pavement-display"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Image Full Width -->
+        </div>
+        <center class="mt-4 mx-4">
+            <div id="ImageContainer_5" style="image-rendering: auto;max-width: 100%;height: auto;">
+                <!-- Images will be inserted here -->
+            </div>
+        </center>
+    </section>
+
+    <section id="deicing">
+        <div class="d-flex justify-content-center text-white my-3"
+            style="background-color: rgb(232, 121, 30); height: 30px;">
+            <h4>DE-ICING</h4>
+        </div>
+
+        <div class=" mt-4">
+            <div class="card-header bg-warning text-dark fw-bold">De-Icing Information</div>
+            <div class="row">
+                <!-- First Column (De-Icing Bays and Requests) -->
+                <div class="col-md-6 mt-2">
+                    <div class="card shadow-sm">
+                        <div class="card-body">
+                            <div class="mb-3">
+                                <label class="form-label">Number of de-icing bays opened</label>
+                                <span class="value" id="deice-open-display"></span>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Number of de-icing requests</label>
+                                <span class="value" id="deice-request-display"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Second Column (De-Icing Completed and Strategy) -->
+                <div class="col-md-6 mt-2">
+                    <div class="card shadow-sm">
+                        <div class="card-body">
+                            <div class="mb-3">
+                                <label class="form-label">Number of de-icing completed</label>
+                                <span class="value" id="deice-number-display"></span>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Strategy forecasted</label>
+                                <span class="value" id="stat-forecasted-display"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="winter_operations">
+        <div class="d-flex justify-content-center text-white my-3"
+            style="background-color: rgb(232, 121, 30); height: 30px;">
+            <h4>AIRSIDE WINTER OPERATIONS</h4>
+        </div>
+        <div class="d-flex justify-content-between mb-3">
+            <!-- Runways, Taxiways, Service Roads in one row -->
+            <div class="col-md-3 d-flex  px-4 py-2 border rounded bg-light">
+                <label class="form-label">Runways treated:</label>
+                <span class="value" id="runways-display"></span>
+            </div>
+            <div class="col-md-3 d-flex  px-4 py-2 border rounded bg-light">
+                <label class="form-label">Taxiways treated:</label>
+                <span class="value" id="taxiways-display"></span>
+            </div>
+            <div class="col-md-3 d-flex  px-4 py-2 border rounded bg-light">
+                <label class="form-label">Service roads salted:</label>
+                <span class="value" id="serive-roads-display"></span>
+            </div>
+        </div>
+
+        <!-- Deployed means in one row -->
+        <div class=" mb-3">
+            <div class="py-2 border rounded bg-light">
+                <label class="form-label mx-3">Deployed means</label>
+                <span class="value" id="deployed-means-display"></span>
+            </div>
+        </div>
+
+        <!-- Operations forecasted in one row -->
+        <div class="mb-3">
+            <div class="py-2 border rounded bg-light">
+                <label class="form-label mx-3">Operations forecasted</label>
+                <span class="value" id="operations-forecasted-display"></span>
+            </div>
+        </div>
+    </section>
+
+    <hr class="border border-danger border-2 opacity-50">
+
+    <section id="best_regards">
+        <div>
+            <p>Best regards,</p>
+            <span class="value" id="user-display"></span>
+        </div>
+    </section>
+
+    <section id="footer" class="d-flex justify-content-center text-center">
+        <div class="py-2 ">
+            <div>
+                <p> Contacts : CDM@CDG Cell <span>+33148160048</span></p>
+            </div>
+            <div>
+                <p>Pre-Departure Sequence Helpdesk : AOC-SEQUENCEMENT-CDGR@adp.fr <span>+33148164871</span></p>
+            </div>
+        </div>
+    </section>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <script>
+        function populateData() {
+            const now = new Date();
+            const dateUTC = now.toISOString().split('T')[0].split('-').reverse().join('-');
+            const timeUTC = now.toISOString().split('T')[1].substring(0, 5);
+        
+            // Set UTC date and time
+            document.getElementById('utc-date').textContent = dateUTC;
+            document.getElementById('utc-time').textContent = timeUTC;
+            document.getElementById('utc-time2').textContent = timeUTC;
+        
+            const savedData = JSON.parse(localStorage.getItem('formData')) || {};
+            const formdata = savedData.formValues || {};
+            const real = savedData.forecastData || {};
+            const deiceData = savedData.deiceData || {};
+            const operationsData = savedData.operationsData || {};
+            const intial = savedData.intial || {};
+            const attendees = savedData.attendees || [];
+        
+            // Configuration & Capacity
+            document.getElementById('configurationDisplay').textContent = formdata.configuration != "Select Configuration" ? formdata.configuration : 'N/A';
+            document.getElementById('departureDisplay').textContent = formdata.departure_capacity || '--';
+            document.getElementById('arrivalDisplay').textContent = formdata.arrival_capacity || '--';
+            document.getElementById('commentsDisplay').textContent = formdata.comments || '';
+        
+            // Real Data
+            document.getElementById('real-under-temp-display').textContent = real['real-under-temp'] || '--';
+            document.getElementById('real-ground-temp-display').textContent = real['real-ground-temp'] || '--';
+            document.getElementById('real-precipitation-display').textContent = real['real-precipitation'] || 'N/A';
+            document.getElementById('real-pavement-display').textContent = real['real-pavement'] !== "Pavement condition" ? real['real-pavement'] : 'N/A';
+        
+            // Forecast Data
+            document.getElementById('forecast-under-temp-display').textContent = real['forecast-under-temp'] || '--';
+            document.getElementById('forecast-ground-temp-display').textContent = real['forecast-ground-temp'] || '--';
+            document.getElementById('forecast-precipitation-display').textContent = real['forecast-precipitation'] || 'N/A';
+            document.getElementById('forecast-pavement-display').textContent = real['forecast-pavement'] !== "Pavement condition" ? real['forecast-pavement'] : 'N/A';
+        
+            // Deice Info
+            document.getElementById('deice-open-display').textContent = deiceData['deice-open'] || '--';
+            document.getElementById('deice-request-display').textContent = deiceData['deice-request'] || '--';
+            document.getElementById('deice-number-display').textContent = deiceData['deice-number'] || '--';
+            document.getElementById('stat-forecasted-display').textContent = deiceData['stat-forecasted'] || 'N/A';
+        
+            // Operations Data
+            document.getElementById('deployed-means-display').textContent = operationsData['deployed-means'] || 'N/A';
+            document.getElementById('operations-forecasted-display').textContent = operationsData['operations-forecasted'] || 'N/A';
+            document.getElementById('runways-display').textContent = operationsData['runways'] !== "Runways treated" ? operationsData['runways'] : 'N/A';
+            document.getElementById('taxiways-display').textContent = operationsData['taxiways'] !== "Taxiways treated" ? operationsData['taxiways'] : 'N/A';
+            document.getElementById('serive-roads-display').textContent = operationsData['serive-roads'] !== "Service roads salted" ? operationsData['serive-roads'] : 'N/A';
+            document.getElementById('user-display').textContent = operationsData['user'] || 'N/A';
+        
+            // Initial Data
+            document.getElementById('cellmode').textContent = intial['cellmode'] || 'N/A';
+            document.getElementById('description').textContent = intial['description'] || 'No Description';
+            document.getElementById('sincetime').textContent = intial['sincetime'] || 'N/A';
+        
+            // Attendees
+            attendees.forEach((value, index) => {
+                const span = document.getElementById(`attendeeDisplay${index + 1}`);
+                span.textContent = value && value !== "Select One Option" ? value : 'N/A';
+            });
+        
+            // Load entry highlights
+            const entries = JSON.parse(localStorage.getItem('entries')) || [];
+            const entriesContainer = document.getElementById('entriesContainer');
+            entriesContainer.innerHTML = entries.length
+                ? entries.map(entry => `
+                    <div class="card mb-3">
+                        <div class="card-body p-2 d-flex">
+                            <p class="mb-1 fw-bold me-5 ms-2">${entry.time}</p>
+                            <p class="mb-0">${entry.description}</p>
+                        </div>
+                    </div>`).join('')
+                : '<div class="alert alert-info">No Highlights found.</div>';
+        }
+        
+        function loadImage(index) {
+            const container = document.getElementById(`ImageContainer_${index}`);
+            const savedData = JSON.parse(localStorage.getItem('formData'));
+            const imgData = localStorage.getItem([`imageData${index}`]);
+
+            if (imgData) {
+                const img = document.createElement('img');
+                img.src = imgData;
+                img.className = 'img-fluid rounded shadow-sm';
+                container.appendChild(img);
+            } else {
+                container.innerHTML = '<p class="text-muted text-center">Image not available</p>';
+            }
+        }
+
+
+        function renderVisibleSectionsFromStorage() {
+            // Retrieve saved visibility states from localStorage
+            const savedVisibility = JSON.parse(localStorage.getItem('toggleStates')) || {};
+        
+            // Iterate over each section ID and its visibility state
+            Object.entries(savedVisibility).forEach(([sectionId, isVisible]) => {
+                const section = document.getElementById(sectionId);
+        
+                // Set the section visibility based on the saved state
+                if (section) {
+                    section.style.display = isVisible ? '' : 'none';
+                }
+            });
+        }        
+        
+        
+        window.onload = function () {
+            renderVisibleSectionsFromStorage();
+            loadImage(1);
+            loadImage(2);
+            loadImage(3);
+            loadImage(4);
+            loadImage(5);
+
+            // Call the function to load the entries when the page loads
+            populateData();
+        };
+
+    </script>
+
+
+</body>
+
+</html>

@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Paste Image from Clipboard</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="script.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+</head>
+
+<body>
+
+    <!-- Side Toggle Navbar -->
+    <div id="sideNavbar" class="side-navbar">
+        <div class="form-switch">
+            <label class="form-check-label" for="deicing-toggle">DE-ICING</label>
+            <input class="form-check-input mx-2" type="checkbox" role="switch" data-target="deicing" checked>
+        </div>
+        <div class="form-switch">
+            <label class="form-check-label" for="weather-toggle">Weather</label>
+            <input class="form-check-input mx-2" type="checkbox" role="switch" data-target="weather" checked>
+        </div>
+        <div class="form-switch">
+            <label class="form-check-label" for="winter-operations-toggle">Winter Operations</label>
+            <input class="form-check-input mx-2" type="checkbox" role="switch" data-target="winter_operations" checked>
+        </div>
+        <div class="form-switch">
+            <label class="form-check-label" for="traffic-toggle">Traffic Situation</label>
+            <input class="form-check-input mx-2" type="checkbox" role="switch" data-target="traffic" checked>
+        </div>
+        <div class="form-switch">
+            <label class="form-check-label" for="runway-toggle">Runway</label>
+            <input class="form-check-input mx-2" type="checkbox" role="switch" data-target="runway" checked>
+        </div>
+        <div class="form-switch">
+            <label class="form-check-label" for="attendees-toggle">Attendees List</label>
+            <input class="form-check-input mx-2" type="checkbox" role="switch" data-target="attendes_list" checked>
+        </div>
+        <div class="form-switch">
+            <label class="form-check-label" for="highlights-toggle">Highlights</label>
+            <input class="form-check-input mx-2" type="checkbox" role="switch" data-target="highlights" checked>
+        </div>
+    </div>
+
+    <style>
+        /* Basic styles for the side navbar */
+        .side-navbar {
+            position: fixed;
+            top: 0;
+            left: -400px;
+            width: 400x;
+            height: 100%;
+            background-color: rgb(4, 4, 50);
+            padding-top: 60px;
+            transition: 0.3s;
+            z-index: 1000;
+            color: white;
+            padding-left: 10px;
+        }
+
+        .side-navbar .form-switch {
+            margin: 15px 0;
+            display: flex;
+            align-items: center;
+        }
+
+        .side-navbar .form-switch label {
+            margin-right: 10px;
+            color: white;
+        }
+
+        .side-navbar .form-switch input {
+            transform: scale(1.2);
+        }
+
+        .toggle-btn {
+            font-size: 20px;
+            cursor: pointer;
+            padding: 10px;
+            background-color: #111;
+            color: white;
+            border: none;
+            position: fixed;
+            top: 10px;
+            left: 50px;
+            z-index: 1001;
+        }
+
+        /* Show the navbar when toggled */
+        .side-navbar.active {
+            left: 0;
+        }
+    </style>
+
+    <!-- Toggle Button for Navbar -->
+    <button class="toggle-btn" id="nav-btn" onclick="toggleNavbar()">☰</button>
+
+
+    <center class="pb-2">
+        <button id="previewButton" class="btn btn-danger">Preview</button>
+        <button class="btn btn-danger" id="saveButton">save</button>
+    </center>
+
+    <section id="intial">
+        <div class="d-flex justify-content-center align-items-center text-white header">
+            <h2>CDM CELL REPORTING</h2>
+        </div>
+
+        <div class="d-flex align-items-center mt-2">
+
+            <div class="d-flex flex-column align-items-center">
+                <img src="image.png" alt="" height="100" width="100">
+                <p>CDM@CDG</p>
+            </div>
+
+            <div class="d-flex flex-column justify-content-center align-items-center"
+                style="margin: 5px 20px; width: 3000px;">
+                <div class="d-flex align-items-center mt-2">
+                    <div>
+                        <div class="d-flex align-items-center px-4 py-2">
+                            <span class="label">Date (UTC) : </span>
+                            <span class="value" id="utc-date">--</span>
+                        </div>
+                        <div class="d-flex align-items-center px-4 py-2">
+                            <span class="label">Time (UTC) : </span>
+                            <span class="value" id="utc-time">--</span>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="d-flex align-items-center px-4 py-2 my-2">
+                            <span class="label">CDM Cell-Mode : </span>
+                            <select class="form-select select" id="cellmode" style="left:1000px">
+                                <option selected disabled value="--"> Select One Option</option>
+                                <option value="Etat">Etat</option>
+                                <option value="Monitoring">Monitoring</option>
+                                <option value="Decision-Making">Decision-Making</option>
+                            </select>
+                        </div>
+                        <div class="d-flex align-items-center px-4 py-2 my-2">
+                            <span class="label">Since : </span>
+                            <input type="time" class="form-control select" id="sincetime" style="left: 1000px;">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-floating">
+                    <textarea class="form-control h-100" placeholder="Leave a comment here" id="description"></textarea>
+                    <label for="description">Briefly describe the situation (ex : Winter operations / Strikes / Weather
+                        disruptions…)</label>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <section id="highlights">
+        <div class="d-flex justify-content-center text-white my-3"
+            style="background-color: rgb(232, 121, 30); height: 30px;">
+            <h4>Highlights</h4>
+        </div>
+
+        <div class="container">
+            <div class="entry-form">
+                <input type="time" id="timeInput" required>
+                <input type="text" id="descriptionInput" placeholder="Enter description" required>
+                <button id="addButton">+</button>
+            </div>
+            <ul id="entryList"></ul>
+        </div>
+    </section>
+
+    <section id="attendes_list">
+        <div class="d-flex justify-content-center text-white mb-3"
+            style="background-color: rgb(232, 121, 30); height: 30px;">
+            <h4>CDM CELL ATTENDES</h4>
+        </div>
+
+        <div class="container" style="width: 1000px;">
+            <div class="d-flex align-items-center px-4 py-2 my-2">
+                <span class="label">ADP Representative / COT CDGR : </span>
+                <select class="form-select select" id="attende1">
+                    <option selected disabled> Select One Option</option>
+                    <option value="Etat">Etat</option>
+                    <option value="Monitoring">Monitoring</option>
+                    <option value="Decision-Making">Decision-Making</option>
+                </select>
+            </div>
+            <div class="d-flex align-items-center px-4 py-2 my-2">
+                <span class="label">ADP deputy representative / COTA CDGR : </span>
+                <select class="form-select select" id="attende2">
+                    <option selected disabled> Select One Option</option>
+                    <option value="Etat">Etat</option>
+                    <option value="Monitoring">Monitoring</option>
+                    <option value="Decision-Making">Decision-Making</option>
+                </select>
+            </div>
+            <div class="d-flex align-items-center px-4 py-2 my-2">
+                <span class="label">ADP Airside ops manager / REPCDGR : </span>
+                <select class="form-select select" id="attende3">
+                    <option selected disabled> Select One Option</option>
+                    <option value="Etat">Etat</option>
+                    <option value="Monitoring">Monitoring</option>
+                    <option value="Decision-Making">Decision-Making</option>
+                </select>
+            </div>
+            <div class="d-flex align-items-center px-4 py-2 my-2">
+                <span class="label">ANSP representative / IPCDM : </span>
+                <select class="form-select select" id="attende4">
+                    <option selected disabled> Select One Option</option>
+                    <option value="Etat">Etat</option>
+                    <option value="Monitoring">Monitoring</option>
+                    <option value="Decision-Making">Decision-Making</option>
+                </select>
+            </div>
+            <div class="d-flex align-items-center px-4 py-2 my-2 ">
+                <span class="label">ANSP representative / IPO : </span>
+                <select class="form-select select" id="attende5">
+                    <option selected disabled> Select One Option</option>
+                    <option value="Etat">Etat</option>
+                    <option value="Monitoring">Monitoring</option>
+                    <option value="Decision-Making">Decision-Making</option>
+                </select>
+            </div>
+            <div class="d-flex align-items-center px-4 py-2 my-2">
+                <span class="label">AFR representative / CDQ - DO AF : </span>
+                <select class="form-select select" id="attende6">
+                    <option selected disabled> Select One Option</option>
+                    <option value="Etat">Etat</option>
+                    <option value="Monitoring">Monitoring</option>
+                    <option value="Decision-Making">Decision-Making</option>
+                </select>
+            </div>
+        </div>
+    </section>
+
+    <section id="runway">
+        <div class="d-flex justify-content-center text-white mb-3"
+            style="background-color: rgb(232, 121, 30); height: 30px;">
+            <h4>RUNWAY</h4>
+        </div>
+
+        <div class="d-flex align-items-center mt-2">
+
+            <div class="container" style="width: 2000px;">
+                <div class="d-flex align-items-center px-4 py-2 my-2">
+                    <span class="label">Configuration : </span>
+                    <select class="form-select select" id="configuration" style="left: 300px;">
+                        <option selected disabled> Select Configuration</option>
+                        <option value="Etat">EAST</option>
+                        <option value="Monitoring">WEST</option>
+                    </select>
+                </div>
+                <div class="d-flex align-items-center px-4 py-2 my-2">
+                    <span class="label">Departure Capacity : </span>
+                    <input type="number" class="form-control select " id="departure_capacity" style="left: 300px;"
+                        max="76">
+                </div>
+                <div class="d-flex align-items-center px-4 py-2 my-2">
+                    <span class="label">Arrival Capacity : </span>
+                    <input type="number" class="form-control select " id="arrival_capacity" style="left: 300px;"
+                        max="73">
+                </div>
+                <div class="d-flex align-items-center px-4 py-2 my-2">
+                    <span class="label">Comments : </span>
+                    <textarea class="form-control select " id="comments" style="left: 300px;"></textarea>
+                </div>
+                <button id="pasteBtn1" class="btn btn-outline-danger mt-3">Click to Copy
+                    the Latest Copied Image</button>
+            </div>
+
+            <div class="right">
+                <div id="image-container1">Click The Button to Paste the Image</div>
+            </div>
+        </div>
+    </section>
+
+    <section id="traffic">
+        <div class="d-flex justify-content-center text-white mb-3"
+            style="background-color: rgb(232, 121, 30); height: 30px;">
+            <h4>TRAFFIC SITUATIONS</h4>
+        </div>
+
+        <div class="d-flex justify-content-center fw-semibold text-white mb-3"
+            style="background-color: rgb(217, 165, 122); height: 20px; font-size: 15px;">
+            <p>ARRIVALS</p>
+        </div>
+        <div class="d-flex justify-content-evenly align-items-center">
+            <div>
+                <button id="pasteBtn2" class="btn btn-outline-danger mt-3 mb-3">Click to Copy the Latest Copied
+                    Image</button>
+            </div>
+            <div id="image-container2">you have to paste the image</div>
+        </div>
+
+        <div class="d-flex justify-content-center fw-semibold text-white my-3"
+            style="background-color: rgb(217, 165, 122); height: 20px; font-size: 15px;">
+            <p>DEPARTURES</p>
+        </div>
+        <div class="d-flex justify-content-evenly align-items-center">
+            <div>
+                <button id="pasteBtn3" class="btn btn-outline-danger mt-3">Click to Copy the Latest Copied
+                    Image</button>
+            </div>
+            <div id="image-container3">you have to paste the image</div>
+        </div>
+
+        <div class="d-flex justify-content-center fw-semibold text-white mt-3"
+            style="background-color: rgb(217, 165, 122); height: 20px; font-size: 15px;">
+            <p>TRAFFIC FLOW</p>
+        </div>
+        <div class="d-flex justify-content-evenly align-items-center mb-3">
+            <div>
+                <button id="pasteBtn4" class="btn btn-outline-danger mt-3">Click to Copy the Latest Copied
+                    Image</button>
+            </div>
+            <div id="image-container4">you have to paste the image</div>
+        </div>
+    </section>
+
+    <section id="weather">
+        <div class="d-flex justify-content-center text-white mb-3"
+            style="background-color: rgb(232, 121, 30); height: 30px;">
+            <h4>WEATHER at
+                <span id="utc-time2">--</span> UTC
+            </h4>
+        </div>
+
+        <div class="main d-flex justify-content-evenly">
+            <div class="main gap-5">
+                <div>
+                    <label class="form-label">Real-time</label>
+                    <input type="text" class="form-control mb-1" placeholder="T°C (under shelter)" id="real-under-temp">
+                    <input type="text" class="form-control mb-1" placeholder="T°C (ground)" id="real-ground-temp">
+                    <input type="text" class="form-control mb-1" placeholder="Precipitation" id="real-precipitation">
+                    <select class="form-select" id="real-pavement">
+                        <option selected disabled> Pavement condition</option>
+                        <option value="Etat">Dry</option>
+                        <option value="Monitoring">Wet</option>
+                        <option value="Decision-Making">White frost</option>
+                        <option value="Decision-Making">Contaminated</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="form-label">Forecast</label>
+                    <input type="text" class="form-control mb-1" placeholder="T°C (under shelter)"
+                        id="forecast-under-temp">
+                    <input type="text" class="form-control mb-1" placeholder="T°C (ground)" id="forecast-ground-temp">
+                    <input type="text" class="form-control mb-1" placeholder="Precipitation"
+                        id="forecast-precipitation">
+                    <select class="form-select" id="forecast-pavement">
+                        <option selected disabled> Pavement condition</option>
+                        <option value="Etat">Dry</option>
+                        <option value="Monitoring">Wet</option>
+                        <option value="Decision-Making">White frost</option>
+                        <option value="Decision-Making">Contaminated</option>
+                    </select>
+                </div>
+            </div>
+            <div>
+                <button id="pasteBtn5" class="btn btn-outline-danger mt-3">Click to Copy the Latest Copied
+                    Image</button>
+                <div id="image-container5">you have to paste the image</div>
+            </div>
+        </div>
+    </section>
+
+    <section id="deicing">
+        <div class="d-flex justify-content-center text-white my-3"
+            style="background-color: rgb(232, 121, 30); height: 30px;">
+            <h4>DE-ICING</h4>
+        </div>
+
+        <input type="text" class="form-control mb-1" placeholder="Number of de-icing bays opened" id="deice-open">
+        <input type="text" class="form-control mb-1" placeholder="Number of de-icing requests" id="deice-request">
+        <input type="text" class="form-control mb-1"
+            placeholder="Number of de-icing d-flex align-items-center px-4 py-2leted" id="deice-number">
+        <input type="text" class="form-control mb-1" placeholder="Strategy forecasted:" id="stat-forecasted">
+    </section>
+
+    <section id="winter_operations">
+        <div class="d-flex justify-content-center text-white my-3"
+            style="background-color: rgb(232, 121, 30); height: 30px;">
+            <h4>AIRSIDE WINTER OPERATIONS</h4>
+        </div>
+
+        <div class="form-floating mb-3">
+            <input type="text" class="form-control" placeholder="" id="deployed-means">
+            <label for="deployed-means">Deployed means</label>
+        </div>
+
+        <div class="main d-flex justify-content-evenly">
+            <div class="main gap-5">
+                <div>
+                    <label class="form-label">Operations realised</label>
+                    <select class="form-select mb-2" id="runways">
+                        <option selected disabled> Runways treated</option>
+                        <option value="Yes">Yes</option>
+                        <option value="No">No</option>
+                    </select>
+                    <select class="form-select mb-2" id="taxiways">
+                        <option selected disabled>Taxiways treated</option>
+                        <option value="Yes">Yes</option>
+                        <option value="No">No</option>
+                    </select>
+                    <select class="form-select mb-2" id="serive-roads">
+                        <option selected disabled>Service roads salted</option>
+                        <option value="Yes">Yes</option>
+                        <option value="No">No</option>
+                    </select>
+                </div>
+            </div>
+            <div>
+                <label class="form-label">Operations forecasted</label>
+                <textarea class="form-control" placeholder="Leave a comment here" id="floatingInput"
+                    style="width: 1000px;"></textarea>
+            </div>
+        </div>
+    </section>
+
+
+    <hr class="border border-danger border-2 opacity-50">
+
+    <section id="best_regards">
+        <div class="d-flex gap-5 align-items-center">
+            <div>
+                <p>Best regards,</p>
+                <input type="text" class="form-control mb-1" placeholder="Enter Name" id="user" required>
+            </div>
+        </div>
+    </section>
+
+    <section id="footer" class="d-flex justify-content-center text-center">
+        <div class="py-2 ">
+            <div>
+                <p> Contacts : CDM@CDG Cell <span>+33148160048</span></p>
+            </div>
+            <div>
+                <p>Pre-Departure Sequence Helpdesk : AOC-SEQUENCEMENT-CDGR@adp.fr <span>+33148164871</span></p>
+            </div>
+        </div>
+    </section>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <script>
+
+        // Initialize the toggle states when the page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            // Retrieve stored toggle states or set an empty object if not present
+            const savedState = JSON.parse(localStorage.getItem('toggleStates')) || {
+                "attendes_list": true,
+                "highlights": true,
+                "winter_operations": true,
+                "deicing": true,
+                "traffic": true,
+                "runway": true,
+                "weather": true
+            };
+
+            // Iterate over all the toggle inputs
+            document.querySelectorAll('.form-check-input').forEach(toggle => {
+                const sectionId = toggle.dataset.target;
+                const section = document.getElementById(sectionId);
+
+                // Set the initial state based on localStorage
+                const isVisible = savedState[sectionId] !== false;
+                toggle.checked = isVisible;
+                section.hidden = !isVisible;
+
+                // Add event listener to update localStorage when toggle changes
+                toggle.addEventListener('change', () => {
+                    section.hidden = !toggle.checked;
+
+                    // Update the stored state of all toggles at once
+                    savedState[sectionId] = toggle.checked;
+
+                    // Store the updated state in localStorage (all at once)
+                    localStorage.setItem('toggleStates', JSON.stringify(savedState));
+                });
+            });
+        });
+
+
+
+        // Helper: Format and display current UTC date and time
+        function displayCurrentUTC() {
+            const now = new Date();
+            const [date, time] = now.toISOString().split('T');
+            const formattedDate = date.split('-').reverse().join('-');
+            const formattedTime = time.substring(0, 5);
+
+            document.getElementById('utc-date').textContent = formattedDate;
+            document.getElementById('utc-time').textContent = formattedTime;
+            document.getElementById('utc-time2').textContent = formattedTime;
+        }
+
+        // Function to toggle the side navbar
+        function toggleNavbar() {
+            const navbar = document.getElementById('sideNavbar');
+            navbar.classList.toggle('active');
+            const navBtn = document.getElementById("nav-btn");
+            navBtn.innerText = navBtn.innerText.trim() === "☰" ? "❌" : "☰";
+
+        }
+
+        // Helper: Get element value safely
+        const getValue = id => document.getElementById(id)?.value.trim() || '';
+
+        // Helper: Set element value safely
+        const setValue = (id, value) => {
+            const el = document.getElementById(id);
+            if (el) el.value = value || '';
+        };
+
+        // Save form data to localStorage
+        function saveAllData() {
+            const formData = {
+                intial: {
+                    cellmode: getValue('cellmode'),
+                    sincetime: getValue('sincetime'),
+                    description: getValue('description')
+                },
+                attendees: Array.from({ length: 6 }, (_, i) => getValue(`attende${i + 1}`)).filter(Boolean),
+                formValues: {
+                    configuration: getValue('configuration'),
+                    departure_capacity: getValue('departure_capacity'),
+                    arrival_capacity: getValue('arrival_capacity'),
+                    comments: getValue('comments')
+                },
+                forecastData: [
+                    'real-under-temp', 'real-ground-temp', 'real-precipitation', 'real-pavement',
+                    'forecast-under-temp', 'forecast-ground-temp', 'forecast-precipitation', 'forecast-pavement'
+                ].reduce((acc, key) => ({ ...acc, [key]: getValue(key) }), {}),
+                deiceData: [
+                    'deice-request', 'deice-number', 'deice-open', 'stat-forecasted'
+                ].reduce((acc, key) => ({ ...acc, [key]: getValue(key) }), {}),
+                operationsData: [
+                    'user', 'deployed-means', 'runways', 'taxiways', 'serive-roads', 'floatingInput'
+                ].reduce((acc, key) => ({ ...acc, [key]: getValue(key) }), {})
+            };
+
+            localStorage.setItem('formData', JSON.stringify(formData));
+            alert('All data saved successfully!');
+        }
+
+        // Load form data from localStorage
+        function loadSavedData() {
+            const savedData = JSON.parse(localStorage.getItem('formData'));
+            if (!savedData) return console.log('No saved data found in localStorage.');
+
+            const { intial, formValues, forecastData, deiceData, operationsData, attendees } = savedData;
+
+            // Set all values
+            Object.entries({ ...formValues, ...intial }).forEach(([key, value]) => setValue(key, value));
+
+            // Set forecast, deice, and ops data
+            Object.entries(forecastData).forEach(([key, value]) => setValue(key, value));
+            Object.entries(deiceData).forEach(([key, value]) => setValue(key, value));
+            Object.entries(operationsData).forEach(([key, value]) => setValue(key, value));
+
+            attendees.forEach((attendee, index) => setValue(`attende${index + 1}`, attendee));
+        }
+
+        // Paste image and save to localStorage
+        async function handleImagePaste(id) {
+            try {
+                const clipboardItems = await navigator.clipboard.read();
+                for (const item of clipboardItems) {
+                    for (const type of item.types) {
+                        if (type.startsWith('image/')) {
+                            const blob = await item.getType(type);
+                            const reader = new FileReader();
+                            reader.onloadend = function () {
+                                const imageDataUrl = reader.result;
+                                localStorage.setItem(`imageData${id}`, imageDataUrl);
+                                const img = document.createElement('img');
+                                img.className = `pasted-image${id}`;
+                                img.src = imageDataUrl;
+                                const container = document.getElementById(`image-container${id}`);
+                                container.innerHTML = '';
+                                container.appendChild(img);
+                            };
+                            reader.readAsDataURL(blob);
+                            return;
+                        }
+                    }
+                }
+                alert('No image found in clipboard.');
+            } catch (err) {
+                alert('Clipboard access failed. Ensure you have an image copied and are using a supported browser.');
+            }
+        }
+
+        // Load image from localStorage
+        function loadSavedImage(id) {
+            const savedImage = localStorage.getItem(`imageData${id}`);
+            if (savedImage) {
+                const img = document.createElement('img');
+                img.className = `pasted-image${id}`;
+                img.src = savedImage;
+                const container = document.getElementById(`image-container${id}`);
+                container.innerHTML = '';
+                container.appendChild(img);
+            }
+        }
+
+        // Initialize on window load
+        window.onload = function () {
+            displayCurrentUTC();
+            loadSavedData();
+            loadEntriesFromLocalStorage?.();
+
+            // Load images
+            [1, 2, 3, 4, 5].forEach(loadSavedImage);
+
+            // Paste buttons
+            [1, 2, 3, 4, 5].forEach(id => {
+                document.getElementById(`pasteBtn${id}`).addEventListener('click', () => handleImagePaste(id));
+            });
+
+            // Button actions
+            document.getElementById('addButton')?.addEventListener('click', addEntry);
+            document.getElementById('saveButton')?.addEventListener('click', saveAllData);
+            document.getElementById('previewButton')?.addEventListener('click', function () {
+                saveAllData();
+                location.href = 'smaple.html';
+            });
+        };
+
+    </script>
+
+
+</body>
+
+</html>
